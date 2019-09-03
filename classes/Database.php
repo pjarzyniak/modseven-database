@@ -101,7 +101,7 @@ abstract class Database {
                 $config = \KO7\Core::$config->load('database')->$name;
             }
 
-            if ( ! isset($config['type']))
+            if ( ! isset($config['driver']))
             {
                 throw new Exception('Database type not defined in :name configuration', [':name' => $name]);
             }
