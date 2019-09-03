@@ -1,0 +1,42 @@
+{
+  "name": "modseven/database",
+  "description": "Database Module for Modseven",
+  "license": "BSD-3-Clause",
+  "keywords": [
+    "kohana",
+    "kohana-php7",
+    "koseven",
+    "modseven",
+    "database",
+    "kohana db",
+    "modseven db"
+  ],
+  "authors": [
+    {
+      "name": "Tobias Oitzinger",
+      "role": "developer"
+    },
+    {
+      "name": "Koseven Team",
+      "homepage": "https://koseven.ga/",
+      "role": "developer"
+    },
+    {
+      "name": "Kohana Team",
+      "email": "team@kohanaframework.org",
+      "homepage": "http://kohanaframework.org/team",
+      "role": "developer"
+    }
+  ],
+  "require": {
+    "php": ">=7.3",
+    "ext-pdo": "*",
+    "ext-mysqli": "*",
+    "toitzi/modseven": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Modseven\\Database\\": "classes"
+    }
+  }
+}
