@@ -78,11 +78,11 @@ class DB {
     /**
      * Create a new Database_Query_Builder_Update.
      *
-     * @param string $table table to update
+     * @param mixed $table table to update
      *
      * @return  Update
      */
-    public static function update(string $table = NULL) : Update
+    public static function update($table = NULL) : Update
     {
         return new Update($table);
     }
