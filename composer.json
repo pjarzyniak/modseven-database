@@ -29,14 +29,18 @@
     }
   ],
   "require": {
-    "php": ">=7.3",
     "ext-pdo": "*",
     "ext-mysqli": "*",
-    "toitzi/modseven": "*"
+    "modseven/core": "*"
   },
   "autoload": {
     "psr-4": {
       "Modseven\\Database\\": "classes"
     }
-  }
+  },
+  "extra" : {
+    "modseven" : true
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
 }

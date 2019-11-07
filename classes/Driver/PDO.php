@@ -3,14 +3,17 @@
  * PDO database connection.
  *
  * @copyright  (c) 2007-2016  Kohana Team
- * @copyright  (c) since 2016 Koseven Team
- * @license        https://koseven.ga/LICENSE
+ * @copyright  (c) 2016-2019  Koseven Team
+ * @copyright  (c) since 2019 Modseven Team
+ * @license    https://koseven.ga/LICENSE
  */
 
 namespace Modseven\Database\Driver;
 
-use \Modseven\Database\Database;
-use \Modseven\Database\Exception;
+use Modseven\Core;
+use Modseven\Profiler;
+use Modseven\Database\Database;
+use Modseven\Database\Exception;
 
 class PDO extends Database {
 
@@ -43,9 +46,10 @@ class PDO extends Database {
      * Connect to the database. This is called automatically when the first
      * query is executed.
      *
-     * @throws  Exception
-     *
      * @return  void
+     *
+     * @throws  Exception
+     * @throws \Modseven\Exception
      */
     public function connect() : void
     {
@@ -87,13 +91,12 @@ class PDO extends Database {
         if ( ! empty($this->_config['charset']))
         {
             // Set the character set
-            $this->set_charset($this->_config['charset']);
+            $this->setCharset($this->_config['charset']);
         }
     }
 
     /**
      * Create or redefine a SQL aggregate function.
-     *
      * [!!] Works only with SQLite
      *
      * @param string   $name      Name of the SQL function to be created or redefined
@@ -101,11 +104,12 @@ class PDO extends Database {
      * @param callback $final     Called after all rows of a result set have been processed
      * @param integer  $arguments Number of arguments that the SQL function takes
      *
-     * @throws Exception
-     *
      * @return  boolean
+     *
+     * @throws Exception
+     * @throws \Modseven\Exception
      */
-    public function create_aggregate(string $name, $step, $final, int $arguments = -1) : bool
+    public function createAggregate(string $name, $step, $final, int $arguments = -1) : bool
     {
         $this->_connection or $this->connect();
 
@@ -121,11 +125,12 @@ class PDO extends Database {
      * @param callback $callback  Callback which implements the SQL function
      * @param integer  $arguments Number of arguments that the SQL function takes
      *
-     * @throws Exception
-     *
      * @return  boolean
+     *
+     * @throws Exception
+     * @throws \Modseven\Exception
      */
-    public function create_function(string $name, $callback, int $arguments = -1) : bool
+    public function createFunction(string $name, $callback, int $arguments = -1) : bool
     {
         $this->_connection or $this->connect();
 
@@ -151,8 +156,10 @@ class PDO extends Database {
      * @param string $charset
      *
      * @throws Exception
+     *
+     * @throws \Modseven\Exception
      */
-    public function set_charset(string $charset) : void
+    public function setCharset(string $charset) : void
     {
         // Make sure the database is connected
         $this->_connection OR $this->connect();
@@ -169,21 +176,20 @@ class PDO extends Database {
      * @param mixed   $as_object result object class string, TRUE for stdClass, FALSE for assoc array
      * @param array   $params    object construct parameters for result class
      *
-     * @throws Exception
+     * @return  mixed   Database_Result for SELECT queries, list (insert id, row count) for INSERT queries, number of affected rows for all other queries
      *
-     * @return  object   Database_Result for SELECT queries
-     * @return  array    list (insert id, row count) for INSERT queries
-     * @return  integer  number of affected rows for all other queries
+     * @throws Exception
+     * @throws \Modseven\Exception
      */
     public function query(int $type, string $sql, $as_object = FALSE, ?array $params = NULL)
     {
         // Make sure the database is connected
         $this->_connection or $this->connect();
 
-        if (\KO7\Core::$profiling)
+        if (Core::$profiling)
         {
             // Benchmark this query for the current instance
-            $benchmark = \KO7\Profiler::start("Database ({$this->_instance})", $sql);
+            $benchmark = Profiler::start("Database ({$this->_instance})", $sql);
         }
 
         try
@@ -195,7 +201,7 @@ class PDO extends Database {
             if (isset($benchmark))
             {
                 // This benchmark is worthless
-                \KO7\Profiler::delete($benchmark);
+                Profiler::delete($benchmark);
             }
 
             // Convert the exception in a database exception
@@ -207,7 +213,7 @@ class PDO extends Database {
 
         if (isset($benchmark))
         {
-            \KO7\Profiler::stop($benchmark);
+            Profiler::stop($benchmark);
         }
 
         // Set the last query
@@ -305,7 +311,7 @@ class PDO extends Database {
      *
      * @return  array
      */
-    public function list_tables(?string $like = NULL) : array
+    public function listTables(?string $like = NULL) : array
     {
         throw new Exception('Database method :method is not supported by :class', [
                 ':method' => __FUNCTION__,
@@ -325,7 +331,7 @@ class PDO extends Database {
      *
      * @return  array
      */
-    public function list_columns($table, ?string $like = NULL, bool $add_prefix = TRUE) : array
+    public function listColumns($table, ?string $like = NULL, bool $add_prefix = TRUE) : array
     {
         throw new Exception('Database method :method is not supported by :class', [
                 ':method' => __FUNCTION__,

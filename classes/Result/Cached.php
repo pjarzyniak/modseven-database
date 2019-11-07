@@ -3,24 +3,28 @@
  * Object used for caching the results of select queries.
  *
  * @copyright  (c) 2007-2016  Kohana Team
- * @copyright  (c) since 2016 Koseven Team
- * @license        https://koseven.ga/LICENSE
+ * @copyright  (c) 2016-2019  Koseven Team
+ * @copyright  (c) since 2019 Modseven Team
+ * @license    https://koseven.ga/LICENSE
  */
 
 namespace Modseven\Database\Result;
 
-class Cached extends \Modseven\Database\Result {
+use Modseven\Database\Result;
 
+class Cached extends Result
+{
     /**
      * Sets the total number of rows and stores the result locally.
      *
-     * @param mixed  $result query result
-     * @param string $sql    SQL query
-     * @param mixed  $as_object
+     * @param mixed  $result        Query result
+     * @param string $sql           SQL query
+     * @param mixed  $as_object     As Object
+     * @param array  $object_params Object Parameter
      */
-    public function __construct(array $result, string $sql, $as_object = NULL)
+    public function __construct(array $result, string $sql, $as_object = NULL, ?array $object_params = NULL)
     {
-        parent::__construct($result, $sql, $as_object);
+        parent::__construct($result, $sql, $as_object, $object_params);
 
         // Find the number of rows in the result
         $this->_total_rows = count($result);

@@ -3,14 +3,15 @@
  * MySQLi database result.
  *
  * @copyright  (c) 2007-2016  Kohana Team
- * @copyright  (c) since 2016 Koseven Team
- * @license        https://koseven.ga/LICENSE
+ * @copyright  (c) 2016-2019  Koseven Team
+ * @copyright  (c) since 2019 Modseven Team
+ * @license    https://koseven.ga/LICENSE
  */
 
 namespace Modseven\Database\MySQLi;
 
-class Result extends \Modseven\Database\Result {
-
+class Result extends \Modseven\Database\Result
+{
     protected $_internal_row = 0;
 
     /**

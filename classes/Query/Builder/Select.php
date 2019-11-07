@@ -3,17 +3,19 @@
  * Database query builder for SELECT statements.
  *
  * @copyright  (c) 2007-2016  Kohana Team
- * @copyright  (c) since 2016 Koseven Team
- * @license        https://koseven.ga/LICENSE
+ * @copyright  (c) 2016-2019  Koseven Team
+ * @copyright  (c) since 2019 Modseven Team
+ * @license    https://koseven.ga/LICENSE
  */
 
 namespace Modseven\Database\Query\Builder;
 
+use Modseven\Database\DB;
 use Modseven\Database\Database;
 use Modseven\Database\Exception;
 
-class Select extends Where {
-
+class Select extends Where
+{
     /**
      * SELECT ...
      * @var array
@@ -120,7 +122,7 @@ class Select extends Where {
      *
      * @return  self
      */
-    public function select_array(array $columns) : self
+    public function selectArray(array $columns) : self
     {
         $this->_select = array_merge($this->_select, $columns);
 
@@ -151,7 +153,7 @@ class Select extends Where {
      */
     public function join($table, ?string $type = NULL) : self
     {
-        $this->_join[] = $this->_last_join = new \Modseven\Database\Query\Builder\Join($table, $type);
+        $this->_join[] = $this->_last_join = new Join($table, $type);
 
         return $this;
     }
@@ -196,7 +198,7 @@ class Select extends Where {
      *
      * @return  self
      */
-    public function group_by($columns) : self
+    public function groupBy($columns) : self
     {
         $this->_group_by = array_merge($this->_group_by, func_get_args());
 
@@ -214,7 +216,7 @@ class Select extends Where {
      */
     public function having($column, string $op, $value = NULL) : self
     {
-        return $this->and_having($column, $op, $value);
+        return $this->andHaving($column, $op, $value);
     }
 
     /**
@@ -226,7 +228,7 @@ class Select extends Where {
      *
      * @return  self
      */
-    public function and_having($column, string $op, $value = NULL) : self
+    public function andHaving($column, string $op, $value = NULL) : self
     {
         $this->_having[] = [
             'AND' => [
@@ -248,7 +250,7 @@ class Select extends Where {
      *
      * @return  self
      */
-    public function or_having($column, string $op, $value = NULL) : self
+    public function orHaving($column, string $op, $value = NULL) : self
     {
         $this->_having[] = [
             'OR' => [
@@ -266,9 +268,9 @@ class Select extends Where {
      *
      * @return  self
      */
-    public function having_open() : self
+    public function havingOpen() : self
     {
-        return $this->and_having_open();
+        return $this->andHavingOpen();
     }
 
     /**
@@ -276,7 +278,7 @@ class Select extends Where {
      *
      * @return  self
      */
-    public function and_having_open() : self
+    public function andHavingOpen() : self
     {
         $this->_having[] = ['AND' => '('];
 
@@ -288,7 +290,7 @@ class Select extends Where {
      *
      * @return  self
      */
-    public function or_having_open() : self
+    public function orHavingOpen() : self
     {
         $this->_having[] = ['OR' => '('];
 
@@ -300,9 +302,9 @@ class Select extends Where {
      *
      * @return  self
      */
-    public function having_close() : self
+    public function havingClose() : self
     {
-        return $this->and_having_close();
+        return $this->andHavingClose();
     }
 
     /**
@@ -310,7 +312,7 @@ class Select extends Where {
      *
      * @return  self
      */
-    public function and_having_close() : self
+    public function andHavingClose() : self
     {
         $this->_having[] = ['AND' => ')'];
 
@@ -322,7 +324,7 @@ class Select extends Where {
      *
      * @return  self
      */
-    public function or_having_close() : self
+    public function orHavingClose() : self
     {
         $this->_having[] = ['OR' => ')'];
 
@@ -337,12 +339,14 @@ class Select extends Where {
      * @param boolean $all    decides if it's an UNION or UNION ALL clause
      *
      * @return self
+     *
+     * @throws Exception
      */
     public function union($select, bool $all = TRUE) : self
     {
         if (is_string($select))
         {
-            $select = \Modseven\Database\DB::select()->from($select);
+            $select = DB::select()->from($select);
         }
         if ( ! $select instanceof Select)
         {
@@ -376,6 +380,9 @@ class Select extends Where {
      * @param mixed $db Database instance or name of instance
      *
      * @return  string
+     *
+     * @throws Exception
+     * @throws \Modseven\Exception
      */
     public function compile($db = NULL) : string
     {
@@ -388,13 +395,13 @@ class Select extends Where {
         // Callback to quote columns
         $quote_column = [
             $db,
-            'quote_column'
+            'quoteColumn'
         ];
 
         // Callback to quote tables
         $quote_table = [
             $db,
-            'quote_table'
+            'quoteTable'
         ];
 
         // Start a selection query
@@ -426,31 +433,31 @@ class Select extends Where {
         if ( ! empty($this->_join))
         {
             // Add tables to join
-            $query .= ' '.$this->_compile_join($db, $this->_join);
+            $query .= ' '.$this->_compileJoin($db, $this->_join);
         }
 
         if ( ! empty($this->_where))
         {
             // Add selection conditions
-            $query .= ' WHERE '.$this->_compile_conditions($db, $this->_where);
+            $query .= ' WHERE '.$this->_compileConditions($db, $this->_where);
         }
 
         if ( ! empty($this->_group_by))
         {
             // Add grouping
-            $query .= ' '.$this->_compile_group_by($db, $this->_group_by);
+            $query .= ' '.$this->_compileGroupBy($db, $this->_group_by);
         }
 
         if ( ! empty($this->_having))
         {
             // Add filtering conditions
-            $query .= ' HAVING '.$this->_compile_conditions($db, $this->_having);
+            $query .= ' HAVING '.$this->_compileConditions($db, $this->_having);
         }
 
         if ( ! empty($this->_order_by))
         {
             // Add sorting
-            $query .= ' '.$this->_compile_order_by($db, $this->_order_by);
+            $query .= ' '.$this->_compileOrderBy($db, $this->_order_by);
         }
 
         if ($this->_limit !== NULL)

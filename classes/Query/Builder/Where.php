@@ -3,17 +3,17 @@
  * Database query builder for WHERE statements.
  *
  * @copyright  (c) 2007-2016  Kohana Team
- * @copyright  (c) since 2016 Koseven Team
- * @license        https://koseven.ga/LICENSE
+ * @copyright  (c) 2016-2019  Koseven Team
+ * @copyright  (c) since 2019 Modseven Team
+ * @license    https://koseven.ga/LICENSE
  */
 
 namespace Modseven\Database\Query\Builder;
 
-use Modseven\Database\Database;
-use Modseven\Database\Exception;
+use Modseven\Database\Query\Builder;
 
-abstract class Where extends \Modseven\Database\Query\Builder {
-
+abstract class Where extends Builder
+{
     /**
      * Where clause
      * @var array
@@ -43,7 +43,7 @@ abstract class Where extends \Modseven\Database\Query\Builder {
      */
     public function where($column, string $op, $value) : self
     {
-        return $this->and_where($column, $op, $value);
+        return $this->andWhere($column, $op, $value);
     }
 
     /**
@@ -55,7 +55,7 @@ abstract class Where extends \Modseven\Database\Query\Builder {
      *
      * @return  self
      */
-    public function and_where($column, string $op, $value) : self
+    public function andWhere($column, string $op, $value) : self
     {
         $this->_where[] = [
             'AND' => [
@@ -77,7 +77,7 @@ abstract class Where extends \Modseven\Database\Query\Builder {
      *
      * @return  self
      */
-    public function or_where($column, string $op, $value) : self
+    public function orWhere($column, string $op, $value) : self
     {
         $this->_where[] = [
             'OR' => [
@@ -95,9 +95,9 @@ abstract class Where extends \Modseven\Database\Query\Builder {
      *
      * @return  self
      */
-    public function where_open() : self
+    public function whereOpen() : self
     {
-        return $this->and_where_open();
+        return $this->andWhereOpen();
     }
 
     /**
@@ -105,7 +105,7 @@ abstract class Where extends \Modseven\Database\Query\Builder {
      *
      * @return  self
      */
-    public function and_where_open() : self
+    public function andWhereOpen() : self
     {
         $this->_where[] = ['AND' => '('];
 
@@ -117,7 +117,7 @@ abstract class Where extends \Modseven\Database\Query\Builder {
      *
      * @return  self
      */
-    public function or_where_open() : self
+    public function orWhereOpen() : self
     {
         $this->_where[] = ['OR' => '('];
 
@@ -129,9 +129,9 @@ abstract class Where extends \Modseven\Database\Query\Builder {
      *
      * @return  self
      */
-    public function where_close() : self
+    public function whereClose() : self
     {
-        return $this->and_where_close();
+        return $this->andWhereClose();
     }
 
     /**
@@ -140,7 +140,7 @@ abstract class Where extends \Modseven\Database\Query\Builder {
      *
      * @return  self
      */
-    public function where_close_empty() : self
+    public function whereCloseEmpty() : self
     {
         $group = end($this->_where);
 
@@ -151,7 +151,7 @@ abstract class Where extends \Modseven\Database\Query\Builder {
             return $this;
         }
 
-        return $this->where_close();
+        return $this->whereClose();
     }
 
     /**
@@ -159,7 +159,7 @@ abstract class Where extends \Modseven\Database\Query\Builder {
      *
      * @return  self
      */
-    public function and_where_close() : self
+    public function andWhereClose() : self
     {
         $this->_where[] = ['AND' => ')'];
 
@@ -171,7 +171,7 @@ abstract class Where extends \Modseven\Database\Query\Builder {
      *
      * @return  self
      */
-    public function or_where_close() : self
+    public function orWhereClose() : self
     {
         $this->_where[] = ['OR' => ')'];
 
@@ -186,7 +186,7 @@ abstract class Where extends \Modseven\Database\Query\Builder {
      *
      * @return  self
      */
-    public function order_by($column, ?string $direction = NULL) : self
+    public function orderBy($column, ?string $direction = NULL) : self
     {
         $this->_order_by[] = [
             $column,

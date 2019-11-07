@@ -9,14 +9,15 @@
 
 namespace Modseven\Database\Driver;
 
-use KO7\Arr;
-use KO7\Profiler;
+use Modseven\Arr;
+use Modseven\Database\MySQLi\Result;
+use Modseven\Profiler;
 
 use \Modseven\Database\Database;
 use \Modseven\Database\Exception;
 
-class MySQLi extends Database {
-
+class MySQLi extends Database
+{
     /**
      * Database in use by each connection
      * @var array
@@ -45,9 +46,10 @@ class MySQLi extends Database {
      * Connect to the database. This is called automatically when the first
      * query is executed.
      *
-     * @throws  Exception
-     *
      * @return  void
+     *
+     * @throws Exception
+     * @throws \Modseven\Exception
      */
     public function connect() : void
     {
@@ -110,7 +112,7 @@ class MySQLi extends Database {
         if ( ! empty($this->_config['charset']))
         {
             // Set the character set
-            $this->set_charset($this->_config['charset']);
+            $this->setCharset($this->_config['charset']);
         }
 
         if ( ! empty($this->_config['connection']['variables']))
@@ -163,11 +165,12 @@ class MySQLi extends Database {
      *
      * @param string $charset character set name
      *
-     * @throws  Exception
-     *
      * @return  void
+     *
+     * @throws Exception
+     * @throws \Modseven\Exception
      */
-    public function set_charset(string $charset) : void
+    public function setCharset(string $charset) : void
     {
         // Make sure the database is connected
         $this->_connection or $this->connect();
@@ -197,21 +200,20 @@ class MySQLi extends Database {
      * @param mixed   $as_object result object class string, TRUE for stdClass, FALSE for assoc array
      * @param array   $params    object construct parameters for result class
      *
-     * @throws Exception
+     * @return  mixed   Database_Result for SELECT queries, list (insert id, row count) for INSERT queries, number of affected rows for all other queries
      *
-     * @return  object   Database_Result for SELECT queries
-     * @return  array    list (insert id, row count) for INSERT queries
-     * @return  integer  number of affected rows for all other queries
+     * @throws Exception
+     * @throws \Modseven\Exception
      */
     public function query(int $type, string $sql, $as_object = FALSE, array $params = NULL)
     {
         // Make sure the database is connected
         $this->_connection or $this->connect();
 
-        if (\KO7\Core::$profiling)
+        if (\Modseven\Core::$profiling)
         {
             // Benchmark this query for the current instance
-            $benchmark = Profiler::start("Database ({$this->_instance})", $sql);
+            $benchmark = Profiler::start("\Modseven\Database\Database ({$this->_instance})", $sql);
         }
 
         // Execute the query
@@ -240,7 +242,7 @@ class MySQLi extends Database {
         if ($type === Database::SELECT)
         {
             // Return an iterator of results
-            return new \Modseven\Database\MySQLi\Result($result, $sql, $as_object, $params);
+            return new Result($result, $sql, $as_object, $params);
         }
         if ($type === Database::INSERT)
         {
@@ -408,9 +410,10 @@ class MySQLi extends Database {
      *
      * @param string $mode transaction mode
      *
-     * @throws Exception
-     *
      * @return  boolean
+     *
+     * @throws Exception
+     * @throws \Modseven\Exception
      */
     public function begin(?string $mode = NULL) : bool
     {
@@ -430,9 +433,10 @@ class MySQLi extends Database {
     /**
      * Commit the current transaction
      *
-     * @throws Exception
-     *
      * @return  boolean
+     *
+     * @throws Exception
+     * @throws \Modseven\Exception
      */
     public function commit() : bool
     {
@@ -445,9 +449,10 @@ class MySQLi extends Database {
     /**
      * Rollback a SQL transaction
      *
-     * @throws Exception
-     *
      * @return boolean
+     *
+     * @throws Exception
+     * @throws \Modseven\Exception
      */
     public function rollback() : bool
     {
@@ -463,11 +468,12 @@ class MySQLi extends Database {
      *
      * @param string $like table to search for
      *
-     * @throws Exception
-     *
      * @return  array
+     *
+     * @throws Exception
+     * @throws \Modseven\Exception
      */
-    public function list_tables(?string $like = NULL) : array
+    public function listTables(?string $like = NULL) : array
     {
         if (is_string($like))
         {
@@ -497,14 +503,15 @@ class MySQLi extends Database {
      * @param string  $like       column to search for
      * @param boolean $add_prefix whether to add the table prefix automatically or not
      *
-     * @throws Exception
-     *
      * @return  array
+     *
+     * @throws Exception
+     * @throws \Modseven\Exception
      */
-    public function list_columns($table, ?string $like = NULL, bool $add_prefix = TRUE) : array
+    public function listColumns($table, ?string $like = NULL, bool $add_prefix = TRUE) : array
     {
         // Quote the table name
-        $table = ($add_prefix === TRUE) ? $this->quote_table($table) : $table;
+        $table = ($add_prefix === TRUE) ? $this->quoteTable($table) : $table;
 
         if (is_string($like))
         {
@@ -521,7 +528,7 @@ class MySQLi extends Database {
         $columns = [];
         foreach ($result as $row)
         {
-            [$type, $length] = $this->_parse_type($row['Type']);
+            [$type, $length] = $this->_parseType($row['Type']);
 
             $column = $this->datatype($type);
 
@@ -589,9 +596,10 @@ class MySQLi extends Database {
      *
      * @param string $value value to quote
      *
-     * @throws Exception
-     *
      * @return  string
+     *
+     * @throws Exception
+     * @throws \Modseven\Exception
      */
     public function escape(string $value) : string
     {

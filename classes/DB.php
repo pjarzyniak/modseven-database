@@ -5,20 +5,20 @@
  * You pass the same parameters to these functions as you pass to the objects they return.
  *
  * @copyright  (c) 2007-2016  Kohana Team
- * @copyright  (c) since 2016 Koseven Team
- * @license        https://koseven.ga/LICENSE
+ * @copyright  (c) 2016-2019  Koseven Team
+ * @copyright  (c) since 2019 Modseven Team
+ * @license    https://koseven.ga/LICENSE
  */
 
 namespace Modseven\Database;
 
-use Modseven\Database\Expression;
 use Modseven\Database\Query\Builder\Select;
 use Modseven\Database\Query\Builder\Insert;
 use Modseven\Database\Query\Builder\Update;
 use Modseven\Database\Query\Builder\Delete;
 
-class DB {
-
+class DB
+{
     /**
      * Create a new Database_Query of the given type.
      *
@@ -57,7 +57,7 @@ class DB {
      *
      * @return  Select
      */
-    public static function select_array(array $columns = NULL) : Select
+    public static function selectArray(array $columns = NULL) : Select
     {
         return new Select($columns);
     }

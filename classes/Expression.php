@@ -4,14 +4,15 @@
  * [Database_Query_Builder] object.
  *
  * @copyright  (c) 2007-2016  Kohana Team
- * @copyright  (c) since 2016 Koseven Team
- * @license        https://koseven.ga/LICENSE
+ * @copyright  (c) 2016-2019  Koseven Team
+ * @copyright  (c) since 2019 Modseven Team
+ * @license    https://koseven.ga/LICENSE
  */
 
 namespace Modseven\Database;
 
-class Expression {
-
+class Expression
+{
     /**
      * Unquoted parameters
      * @var array
@@ -108,7 +109,7 @@ class Expression {
      * @param mixed    Database instance or name of instance
      *
      * @throws Exception;
-     * @throws \KO7\Exception;
+     * @throws \Modseven\Exception;
      *
      * @return  string
      */

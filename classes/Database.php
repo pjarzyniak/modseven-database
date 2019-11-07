@@ -11,16 +11,18 @@
  * created using the DB helper class.
  *
  * @copyright  (c) 2007-2016  Kohana Team
- * @copyright  (c) since 2016 Koseven Team
- * @license        https://koseven.ga/LICENSE
+ * @copyright  (c) 2016-2019  Koseven Team
+ * @copyright  (c) since 2019 Modseven Team
+ * @license    https://koseven.ga/LICENSE
  */
 
 namespace Modseven\Database;
 
-use Modseven\Database\Exception;
+use stdClass;
+use Modseven\Core;
 
-abstract class Database {
-
+abstract class Database
+{
     // Query types
     const SELECT = 1;
 
@@ -81,7 +83,7 @@ abstract class Database {
      * @param array  $config configuration parameters
      *
      * @throws Exception
-     * @throws \KO7\Exception
+     * @throws \Modseven\Exception
      *
      * @return  self
      */
@@ -98,7 +100,7 @@ abstract class Database {
             if ($config === NULL)
             {
                 // Load the configuration for this database
-                $config = \KO7\Core::$config->load('database')->$name;
+                $config = Core::$config->load('database')->$name;
             }
 
             if ( ! isset($config['driver']))
@@ -189,7 +191,7 @@ abstract class Database {
      *
      * @return  void
      */
-    abstract public function set_charset(string $charset) : void;
+    abstract public function setCharset(string $charset) : void;
 
     /**
      * Perform an SQL query of the given type.
@@ -235,10 +237,10 @@ abstract class Database {
      *
      * @return  integer
      */
-    public function count_records($table) : int
+    public function countRecords($table) : int
     {
         // Quote the table name
-        $table = $this->quote_table($table);
+        $table = $this->quoteTable($table);
 
         return $this->query(static::SELECT, 'SELECT COUNT(*) AS total_row_count FROM '.$table, FALSE)->get('total_row_count');
     }
@@ -375,7 +377,7 @@ abstract class Database {
      *
      * @return  array
      */
-    abstract public function list_tables(?string $like = NULL) : array;
+    abstract public function listTables(?string $like = NULL) : array;
 
     /**
      * Lists all of the columns in a table. Optionally, a LIKE string can be
@@ -387,7 +389,7 @@ abstract class Database {
      *
      * @return  array
      */
-    abstract public function list_columns($table, ?string $like = NULL, bool $add_prefix = TRUE) : array;
+    abstract public function listColumns($table, ?string $like = NULL, bool $add_prefix = TRUE) : array;
 
     /**
      * Extracts the text between parentheses, if any.
@@ -396,7 +398,7 @@ abstract class Database {
      *
      * @return  array   list containing the type and length, if any
      */
-    protected function _parse_type(string $type) : array
+    protected function _parseType(string $type) : array
     {
         if (($open = strpos($type, '(')) === FALSE)
         {
@@ -427,7 +429,7 @@ abstract class Database {
      *
      * @return  string
      */
-    public function table_prefix() : string
+    public function tablePrefix() : string
     {
         return $this->_config['table_prefix'];
     }
@@ -444,6 +446,8 @@ abstract class Database {
      * @param mixed $value any value to quote
      *
      * @return  string
+     *
+     * @throws \Modseven\Exception
      */
     public function quote($value) : string
     {
@@ -512,8 +516,10 @@ abstract class Database {
      * @param mixed $column column name or array(column, alias)
      *
      * @return  string
+     *
+     * @throws \Modseven\Exception
      */
-    public function quote_column($column) : string
+    public function quoteColumn($column) : string
     {
         // Identifiers are escaped by repeating them
         $escaped_identifier = $this->_identifier.$this->_identifier;
@@ -549,7 +555,7 @@ abstract class Database {
             {
                 $parts = explode('.', $column);
 
-                if ($prefix = $this->table_prefix())
+                if ($prefix = $this->tablePrefix())
                 {
                     // Get the offset of the table name, 2nd-to-last part
                     $offset = count($parts)-2;
@@ -596,8 +602,10 @@ abstract class Database {
      * @param mixed $table table name or array(table, alias)
      *
      * @return  string
+     *
+     * @throws \Modseven\Exception
      */
-    public function quote_table($table) : string
+    public function quoteTable($table) : string
     {
         // Identifiers are escaped by repeating them
         $escaped_identifier = $this->_identifier.$this->_identifier;
@@ -629,7 +637,7 @@ abstract class Database {
             {
                 $parts = explode('.', $table);
 
-                if ($prefix = $this->table_prefix())
+                if ($prefix = $this->tablePrefix())
                 {
                     // Get the offset of the table name, last part
                     $offset = count($parts)-1;
@@ -651,14 +659,14 @@ abstract class Database {
             else
             {
                 // Add the table prefix
-                $table = $this->_identifier.$this->table_prefix().$table.$this->_identifier;
+                $table = $this->_identifier.$this->tablePrefix() . $table . $this->_identifier;
             }
         }
 
         if (isset($alias))
         {
             // Attach table prefix to alias
-            $table .= ' AS '.$this->_identifier.$this->table_prefix().$alias.$this->_identifier;
+            $table .= ' AS '.$this->_identifier.$this->tablePrefix() . $alias . $this->_identifier;
         }
 
         return $table;
@@ -675,8 +683,10 @@ abstract class Database {
      * @param mixed $value any identifier
      *
      * @return  string
+     *
+     * @throws \Modseven\Exception
      */
-    public function quote_identifier($value) : string
+    public function quoteIdentifier($value) : string
     {
         // Identifiers are escaped by repeating them
         $escaped_identifier = $this->_identifier.$this->_identifier;

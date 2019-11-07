@@ -3,14 +3,21 @@
  * Database result wrapper.
  *
  * @copyright  (c) 2007-2016  Kohana Team
- * @copyright  (c) since 2016 Koseven Team
- * @license        https://koseven.ga/LICENSE
+ * @copyright  (c) 2016-2019  Koseven Team
+ * @copyright  (c) since 2019 Modseven Team
+ * @license    https://koseven.ga/LICENSE
  */
 
 namespace Modseven\Database;
 
-abstract class Result implements \Countable, \Iterator, \SeekableIterator, \ArrayAccess {
+use Iterator;
+use Countable;
+use ArrayAccess;
+use SeekableIterator;
+use Modseven\Database\Result\Cached;
 
+abstract class Result implements Countable, Iterator, SeekableIterator, ArrayAccess
+{
     /**
      * Executed SQL for this result
      * @var string
@@ -87,11 +94,11 @@ abstract class Result implements \Countable, \Iterator, \SeekableIterator, \Arra
     /**
      * Get a cached database result from the current result iterator.
      *
-     * @return  \Modseven\Database\Result\Cached
+     * @return  Cached
      */
-    public function cached() : \Modseven\Database\Result\Cached
+    public function cached() : Cached
     {
-        return new \Modseven\Database\Result\Cached($this->as_array(), $this->_query, $this->_as_object);
+        return new Cached($this->asArray(), $this->_query, $this->_as_object);
     }
 
     /**
@@ -102,7 +109,7 @@ abstract class Result implements \Countable, \Iterator, \SeekableIterator, \Arra
      *
      * @return  array
      */
-    public function as_array(?string $key = NULL, ?string $value = NULL) : array
+    public function asArray(?string $key = NULL, ?string $value = NULL) : array
     {
         $results = [];
 

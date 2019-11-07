@@ -3,16 +3,18 @@
  * Database query wrapper.
  *
  * @copyright  (c) 2007-2016  Kohana Team
- * @copyright  (c) since 2016 Koseven Team
- * @license        https://koseven.ga/LICENSE
+ * @copyright  (c) 2016-2019  Koseven Team
+ * @copyright  (c) since 2019 Modseven Team
+ * @license    https://koseven.ga/LICENSE
  */
 
 namespace Modseven\Database;
 
-use KO7\Core;
+use Modseven\Core;
+use Modseven\Database\Result\Cached;
 
-class Query {
-
+class Query
+{
     /**
      * Query type
      * @var int
@@ -70,7 +72,7 @@ class Query {
     /**
      * Return the SQL query string.
      *
-     * @throws \KO7\Exception
+     * @throws \Modseven\Exception
      *
      * @return  string
      */
@@ -105,14 +107,8 @@ class Query {
      *
      * @return  self
      */
-    public function cached(?int $lifetime = NULL, ?bool $force = FALSE) : self
+    public function cached(int $lifetime, ?bool $force = FALSE) : self
     {
-        if ($lifetime === NULL)
-        {
-            // Use the global setting
-            $lifetime = Core::$cache_life;
-        }
-
         $this->_force_execute = $force;
         $this->_lifetime = $lifetime;
 
@@ -124,7 +120,7 @@ class Query {
      *
      * @return  self
      */
-    public function as_assoc() : self
+    public function asAssoc() : self
     {
         $this->_as_object = FALSE;
 
@@ -141,7 +137,7 @@ class Query {
      *
      * @return  self
      */
-    public function as_object($class = TRUE, ?array $params = NULL) : self
+    public function asObject($class = TRUE, ?array $params = NULL) : self
     {
         $this->_as_object = $class;
 
@@ -207,7 +203,7 @@ class Query {
      *
      * @param mixed $db Database instance or name of instance
      *
-     * @throws \KO7\Exception
+     * @throws \Modseven\Exception
      *
      * @return  string
      */
@@ -244,11 +240,9 @@ class Query {
      * @param bool  $as_object     result object classname, TRUE for stdClass or FALSE for array
      * @param array $object_params result object constructor arguments
      *
-     * @throws \KO7\Exception
+     * @return  mixed   Database_Result for SELECT queries, the insert id for INSERT queries, number of affected rows for all other queries
      *
-     * @return  object   Database_Result for SELECT queries
-     * @return  mixed    the insert id for INSERT queries
-     * @return  integer  number of affected rows for all other queries
+     * @throws \Modseven\Exception
      */
     public function execute($db = NULL, ?bool $as_object = NULL, ?array $object_params = NULL)
     {
@@ -274,13 +268,13 @@ class Query {
         if ($this->_lifetime !== NULL && $this->_type === Database::SELECT)
         {
             // Set the cache key based on the database instance name and SQL
-            $cache_key = 'Database::query("'.$db.'", "'.$sql.'")';
+            $cache_key = '\Modseven\Database\Database::query("'.$db.'", "'.$sql.'")';
 
             // Read the cache first to delete a possible hit with lifetime <= 0
             if (! $this->_force_execute && ($result = Core::cache($cache_key, NULL, $this->_lifetime)) !== NULL)
             {
                 // Return a cached result
-                return new \Modseven\Database\Result\Cached($result, $sql, $as_object, $object_params);
+                return new Cached($result, $sql, $as_object, $object_params);
             }
         }
 

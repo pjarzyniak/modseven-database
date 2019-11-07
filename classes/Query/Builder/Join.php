@@ -3,17 +3,19 @@
  * Database query builder for JOIN statements.
  *
  * @copyright  (c) 2007-2016  Kohana Team
- * @copyright  (c) since 2016 Koseven Team
- * @license        https://koseven.ga/LICENSE
+ * @copyright  (c) 2016-2019  Koseven Team
+ * @copyright  (c) since 2019 Modseven Team
+ * @license    https://koseven.ga/LICENSE
  */
 
 namespace Modseven\Database\Query\Builder;
 
 use Modseven\Database\Database;
 use Modseven\Database\Exception;
+use Modseven\Database\Query\Builder;
 
-class Join extends \Modseven\Database\Query\Builder {
-
+class Join extends Builder
+{
     /**
      * JOIN Type (LEFT, RIGHT, INNER, OUTER, etc..)
      * @var string
@@ -110,9 +112,10 @@ class Join extends \Modseven\Database\Query\Builder {
      *
      * @param mixed $db Database instance or name of instance
      *
-     * @throws Exception
-     *
      * @return  string
+     *
+     * @throws Exception
+     * @throws \Modseven\Exception
      */
     public function compile($db = NULL) : string
     {
@@ -132,14 +135,14 @@ class Join extends \Modseven\Database\Query\Builder {
         }
 
         // Quote the table name that is being joined
-        $sql .= ' '.$db->quote_table($this->_table);
+        $sql .= ' '.$db->quoteTable($this->_table);
 
         if ( ! empty($this->_using))
         {
             // Quote and concat the columns
             $sql .= ' USING ('.implode(', ', array_map([
                     $db,
-                    'quote_column'
+                    'quoteColumn'
                 ], $this->_using)).')';
         }
         else
@@ -157,7 +160,7 @@ class Join extends \Modseven\Database\Query\Builder {
                 }
 
                 // Quote each of the columns used for the condition
-                $conditions[] = $db->quote_column($c1).$op.' '.$db->quote_column($c2);
+                $conditions[] = $db->quoteColumn($c1) . $op . ' ' . $db->quoteColumn($c2);
             }
 
             // Concat the conditions "... AND ..."

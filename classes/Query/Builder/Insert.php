@@ -3,18 +3,20 @@
  * Database query builder for INSERT statements.
  *
  * @copyright  (c) 2007-2016  Kohana Team
- * @copyright  (c) since 2016 Koseven Team
- * @license        https://koseven.ga/LICENSE
+ * @copyright  (c) 2016-2019  Koseven Team
+ * @copyright  (c) since 2019 Modseven Team
+ * @license    https://koseven.ga/LICENSE
  */
 
 namespace Modseven\Database\Query\Builder;
 
+use Modseven\Database\Query;
 use Modseven\Database\Database;
 use Modseven\Database\Exception;
-use Modseven\Database\Query;
+use Modseven\Database\Query\Builder;
 
-class Insert extends \Modseven\Database\Query\Builder {
-
+class Insert extends Builder
+{
     /**
      * Table to insert into
      * @var string
@@ -36,8 +38,10 @@ class Insert extends \Modseven\Database\Query\Builder {
     /**
      * Set the table and columns for an insert.
      *
-     * @param mixed $table table name or array($table, $alias) or object
+     * @param mixed $table   table name or array($table, $alias) or object
      * @param array $columns column names
+     *
+     * @throws Exception
      */
     public function __construct($table = NULL, array $columns = NULL)
     {
@@ -143,6 +147,9 @@ class Insert extends \Modseven\Database\Query\Builder {
      * @param mixed $db Database instance or name of instance
      *
      * @return  string
+     *
+     * @throws Exception
+     * @throws \Modseven\Exception
      */
     public function compile($db = NULL) : string
     {
@@ -153,12 +160,12 @@ class Insert extends \Modseven\Database\Query\Builder {
         }
 
         // Start an insertion query
-        $query = 'INSERT INTO '.$db->quote_table($this->_table);
+        $query = 'INSERT INTO '.$db->quoteTable($this->_table);
 
         // Add the column names
         $query .= ' ('.implode(', ', array_map([
                 $db,
-                'quote_column'
+                'quoteColumn'
             ], $this->_columns)).') ';
 
         if (is_array($this->_values))

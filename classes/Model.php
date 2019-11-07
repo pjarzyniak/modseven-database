@@ -3,14 +3,15 @@
  * Database Model base class.
  *
  * @copyright  (c) 2007-2016  Kohana Team
- * @copyright  (c) since 2016 Koseven Team
- * @license        https://koseven.ga/LICENSE
+ * @copyright  (c) 2016-2019  Koseven Team
+ * @copyright  (c) since 2019 Modseven Team
+ * @license    https://koseven.ga/LICENSE
  */
 
 namespace Modseven\Database;
 
-abstract class Model extends \KO7\Model {
-
+abstract class Model extends \Modseven\Model
+{
     /**
      * Database instance
      * @var Database
@@ -25,9 +26,9 @@ abstract class Model extends \KO7\Model {
      * @param   string   $name  model name
      * @param   mixed    $db    Database instance object or string
      *
-     * @return  \KO7\Model
+     * @return  \Modseven\Model
      */
-    public static function factory(string $name, $db = NULL) : \KO7\Model
+    public static function factory(string $name, $db = NULL) : \Modseven\Model
     {
         // Add the model prefix
         $class = 'Model_'.$name;
@@ -38,12 +39,10 @@ abstract class Model extends \KO7\Model {
     /**
      * Loads the database.
      *
-     *     $model = new Foo_Model($db);
-     *
      * @param mixed $db Database instance object or string
      *
      * @throws Exception
-     * @throws \KO7\Exception
+     * @throws \Modseven\Exception
      *
      * @return  void
      */

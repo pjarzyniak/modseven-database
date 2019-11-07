@@ -2,6 +2,9 @@
 
 return [
 	'database' => [
+
+	    'driver' => \Modseven\Database\Session::class,
+
 		/**
 		 * Database settings for session storage.
 		 *

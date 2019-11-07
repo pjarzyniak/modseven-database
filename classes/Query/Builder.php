@@ -3,17 +3,19 @@
  * Database query builder.
  *
  * @copyright  (c) 2007-2016  Kohana Team
- * @copyright  (c) since 2016 Koseven Team
- * @license        https://koseven.ga/LICENSE
+ * @copyright  (c) 2016-2019  Koseven Team
+ * @copyright  (c) since 2019 Modseven Team
+ * @license    https://koseven.ga/LICENSE
  */
 
 namespace Modseven\Database\Query;
 
+use Modseven\Database\Query;
 use Modseven\Database\Database;
 use Modseven\Database\Exception;
 
-abstract class Builder extends \Modseven\Database\Query {
-
+abstract class Builder extends Query
+{
     /**
      * Compiles an array of JOIN statements into an SQL partial.
      *
@@ -22,7 +24,7 @@ abstract class Builder extends \Modseven\Database\Query {
      *
      * @return  string
      */
-    protected function _compile_join(Database $db, array $joins) : string
+    protected function _compileJoin(Database $db, array $joins) : string
     {
         $statements = [];
 
@@ -43,8 +45,10 @@ abstract class Builder extends \Modseven\Database\Query {
      * @param array    $conditions condition statements
      *
      * @return  string
+     *
+     * @throws \Modseven\Exception
      */
-    protected function _compile_conditions(Database $db, array $conditions) : string
+    protected function _compileConditions(Database $db, array $conditions) : string
     {
         $last_condition = NULL;
 
@@ -131,12 +135,12 @@ abstract class Builder extends \Modseven\Database\Query {
                         if (is_array($column))
                         {
                             // Use the column name
-                            $column = $db->quote_identifier(reset($column));
+                            $column = $db->quoteIdentifier(reset($column));
                         }
                         else
                         {
                             // Apply proper quoting to the column
-                            $column = $db->quote_column($column);
+                            $column = $db->quoteColumn($column);
                         }
                     }
 
@@ -158,8 +162,10 @@ abstract class Builder extends \Modseven\Database\Query {
      * @param array    $values updated values
      *
      * @return  string
+     *
+     * @throws \Modseven\Exception
      */
-    protected function _compile_set(Database $db, array $values) : string
+    protected function _compileSet(Database $db, array $values) : string
     {
         $set = [];
         foreach ($values as $group)
@@ -168,7 +174,7 @@ abstract class Builder extends \Modseven\Database\Query {
             [$column, $value] = $group;
 
             // Quote the column name
-            $column = $db->quote_column($column);
+            $column = $db->quoteColumn($column);
 
             if ((is_string($value) && array_key_exists($value, $this->_parameters)) === FALSE)
             {
@@ -189,8 +195,10 @@ abstract class Builder extends \Modseven\Database\Query {
      * @param array    $columns
      *
      * @return  string
+     *
+     * @throws \Modseven\Exception
      */
-    protected function _compile_group_by(Database $db, array $columns) : string
+    protected function _compileGroupBy(Database $db, array $columns) : string
     {
         $group = [];
 
@@ -199,12 +207,12 @@ abstract class Builder extends \Modseven\Database\Query {
             if (is_array($column))
             {
                 // Use the column alias
-                $column = $db->quote_identifier(end($column));
+                $column = $db->quoteIdentifier(end($column));
             }
             else
             {
                 // Apply proper quoting to the column
-                $column = $db->quote_column($column);
+                $column = $db->quoteColumn($column);
             }
 
             $group[] = $column;
@@ -219,11 +227,12 @@ abstract class Builder extends \Modseven\Database\Query {
      * @param Database $db      Database instance
      * @param array    $columns sorting columns
      *
-     * @throws Exception
-     *
      * @return string
+     *
+     * @throws Exception
+     * @throws \Modseven\Exception
      */
-    protected function _compile_order_by(Database $db, array $columns) : string
+    protected function _compileOrderBy(Database $db, array $columns) : string
     {
         $sort = [];
         foreach ($columns as $group)
@@ -233,12 +242,12 @@ abstract class Builder extends \Modseven\Database\Query {
             if (is_array($column))
             {
                 // Use the column alias
-                $column = $db->quote_identifier(end($column));
+                $column = $db->quoteIdentifier(end($column));
             }
             else
             {
                 // Apply proper quoting to the column
-                $column = $db->quote_column($column);
+                $column = $db->quoteColumn($column);
             }
 
             if ($direction)

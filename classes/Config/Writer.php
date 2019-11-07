@@ -12,14 +12,18 @@
  *     ) ENGINE=InnoDB;
  *
  * @copyright  (c) 2007-2016  Kohana Team
- * @copyright  (c) since 2016 Koseven Team
- * @license        https://koseven.ga/LICENSE
+ * @copyright  (c) 2016-2019  Koseven Team
+ * @copyright  (c) since 2019 Modseven Team
+ * @license    https://koseven.ga/LICENSE
  */
 
 namespace Modseven\Database\Config;
 
-class Writer extends Reader implements \KO7\Config\Writer {
+use Modseven\Database\DB;
+use Modseven\Exception;
 
+class Writer extends Reader implements \Modseven\Config\Writer
+{
     /**
      * Holds already loaded keys
      * @var array
@@ -34,6 +38,8 @@ class Writer extends Reader implements \KO7\Config\Writer {
      * @param string $group Configuration group
      *
      * @return boolean|array
+     *
+     * @throws Exception;
      */
     public function load(string $group)
     {
@@ -95,10 +101,12 @@ class Writer extends Reader implements \KO7\Config\Writer {
      * @param string $config The serialized configuration to write
      *
      * @return self
+     *
+     * @throws Exception
      */
     protected function _insert(string $group, string $key, string $config) : self
     {
-        \Modseven\Database\DB::insert($this->_table_name, [
+        DB::insert($this->_table_name, [
             'group_name',
             'config_key',
             'config_value'
@@ -119,10 +127,12 @@ class Writer extends Reader implements \KO7\Config\Writer {
      * @param string $config The serialized configuration to write
      *
      * @return self
+     *
+     * @throws Exception
      */
     protected function _update(string $group, string $key, string $config) : self
     {
-        \Modseven\Database\DB::update($this->_table_name)
+        DB::update($this->_table_name)
             ->set(['config_value' => $config])
             ->where('group_name', '=', $group)
             ->where('config_key', '=', $key)

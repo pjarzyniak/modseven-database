@@ -13,16 +13,17 @@
  *     ) ENGINE = MYISAM ;
  *
  * @copyright  (c) 2007-2016  Kohana Team
- * @copyright  (c) since 2016 Koseven Team
- * @license        https://koseven.ga/LICENSE
+ * @copyright  (c) 2016-2019  Koseven Team
+ * @copyright  (c) since 2019 Modseven Team
+ * @license    https://koseven.ga/LICENSE
  */
 
 namespace Modseven\Database;
 
-use KO7\Cookie;
+use Modseven\Cookie;
 
-class Session extends \KO7\Session {
-
+class Session extends \Modseven\Session
+{
     /**
      * Database instance
      * @var Database
@@ -73,7 +74,7 @@ class Session extends \KO7\Session {
      *
      * @throws Exception
      * @throws \Exception
-     * @throws \KO7\Exception
+     * @throws \Modseven\Exception
      */
     public function __construct(array $config = NULL, $id = NULL)
     {
@@ -129,7 +130,7 @@ class Session extends \KO7\Session {
      *
      * @param string $id session id
      *
-     * @throws \KO7\Exception
+     * @throws \Modseven\Exception
      *
      * @return  string
      */
@@ -161,7 +162,7 @@ class Session extends \KO7\Session {
     /**
      * Generate a new session id and return it.
      *
-     * @throws \KO7\Exception
+     * @throws \Modseven\Exception
      *
      * @return  string
      */
@@ -190,7 +191,7 @@ class Session extends \KO7\Session {
     /**
      * Writes the current session.
      *
-     * @throws \KO7\Exception
+     * @throws \Modseven\Exception
      *
      * @return  boolean
      */
@@ -240,7 +241,7 @@ class Session extends \KO7\Session {
     /**
      * Restart the session.
      *
-     * @throws \KO7\Exception
+     * @throws \Modseven\Exception
      *
      * @return  boolean
      */
@@ -292,7 +293,7 @@ class Session extends \KO7\Session {
     /**
      * Garbage Collector
      *
-     * @throws \KO7\Exception
+     * @throws \Modseven\Exception
      */
     protected function _gc() : void
     {
@@ -304,7 +305,7 @@ class Session extends \KO7\Session {
         else
         {
             // Expire sessions after one month
-            $expires = \KO7\Date::MONTH;
+            $expires = \Modseven\Date::MONTH;
         }
 
         // Delete all sessions that have expired
