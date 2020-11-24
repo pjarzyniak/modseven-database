@@ -18,6 +18,7 @@
 
 namespace Modseven\Database;
 
+use Modseven\Config;
 use stdClass;
 use Modseven\Core;
 
@@ -100,7 +101,7 @@ abstract class Database
             if ($config === NULL)
             {
                 // Load the configuration for this database
-                $config = Core::$config->load('database')->$name;
+                $config = Config::instance()->load('database')->$name;
             }
 
             if ( ! isset($config['driver']))
