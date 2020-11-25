@@ -21,6 +21,7 @@
 namespace Modseven\Database;
 
 use Modseven\Cookie;
+use Modseven\Date;
 
 class Session extends \Modseven\Session
 {
@@ -128,13 +129,13 @@ class Session extends \Modseven\Session
     /**
      * Loads the raw session data string and returns it.
      *
-     * @param string $id session id
+     * @param string|null $id session id
      *
      * @throws \Modseven\Exception
      *
      * @return  string
      */
-    protected function _read(?string $id = NULL) : string
+    protected function _read(?string $id = NULL) : ?string
     {
         if ($id || $id = Cookie::get($this->_name))
         {
@@ -305,7 +306,7 @@ class Session extends \Modseven\Session
         else
         {
             // Expire sessions after one month
-            $expires = \Modseven\Date::MONTH;
+            $expires = Date::MONTH;
         }
 
         // Delete all sessions that have expired
