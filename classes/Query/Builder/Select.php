@@ -374,6 +374,26 @@ class Select extends Where
         return $this;
     }
 
+
+    /**
+     * Count the number of unique records in the select group by query.
+     *
+     * @param string $column
+     * @return integer
+     * @throws \Modseven\Exception
+     */
+    public function countGroups(string $column = 'id') : int
+    {
+        $this->_select = [array(DB::expr('COUNT(DISTINCT '.$column.')'), 'records_found')];
+        $this->_group_by = [];
+
+        $records = $this->execute()->get('records_found');
+        $this->reset();
+
+        return (int)$records;
+    }
+
+
     /**
      * Compile the SQL query and return it.
      *
